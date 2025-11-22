@@ -6,6 +6,7 @@ import LandingPage from './modules/landing/LandingPage';
 import LoginPage from './modules/auth/LoginPage';
 import StudentDashboard from './modules/student/Dashboard';
 import SchoolDashboard from './modules/school/Dashboard';
+import SchoolRegisterPage from './modules/auth/SchoolRegisterPage';
 
 // Korumalı Rota Bileşeni
 function ProtectedRoute({ children, allowedRoles }) {
