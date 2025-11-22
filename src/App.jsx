@@ -48,6 +48,8 @@ export default function App() {
               </ProtectedRoute>
             } 
           />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/school-register" element={<SchoolRegisterPage />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
