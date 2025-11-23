@@ -1,9 +1,27 @@
 import { Link } from 'react-router-dom';
-import { 
-    Home, Users, Heart, GraduationCap, Settings, LogOut, 
-    MessageSquare, BookOpen, Clock, Zap, Target 
-} from 'lucide-react';
 import SeoHelmet from '../../components/SeoHelmet';
+import { 
+    Home, Users, Heart, Settings, LogOut, 
+    MessageSquare, BookOpen, Clock, Zap, Target, ArrowLeft, Search, LucideIcon 
+} from 'lucide-react'; // ArrowLeft eklendi, kullanılmayanlar temizlendi
+
+// --- TİP TANIMLARI ---
+interface NavItemProps {
+    icon: LucideIcon;
+    label: string;
+    active?: boolean;
+}
+
+interface ArticleData {
+    title: string;
+    category: string;
+    readingTime: string;
+    image: string;
+    link: string;
+}
+
+// Makale Kartı Bileşen Prop Tipi
+interface ArticleCardProps extends ArticleData {}
 
 // Yan Menü Bileşeni (ParentDashboard'dan kopyalandı)
 const ParentSidebar = () => {
@@ -13,6 +31,14 @@ const ParentSidebar = () => {
       { name: 'İletişim', icon: MessageSquare, link: '/parent/messages' },
       { name: 'Ayarlar', icon: Settings, link: '/parent/settings' },
     ];
+    
+    // Yan menü için NavItem helper'ı
+    const NavItem = ({ icon: IconComponent, label, active = false }: NavItemProps) => (
+        <div className={`flex items-center gap-3 p-3.5 rounded-xl cursor-pointer transition duration-200 group ${active ? 'bg-blue-600 text-white shadow-lg shadow-blue-900/20' : 'text-slate-500 hover:bg-blue-50 hover:text-slate-900'}`}>
+            <IconComponent size={20} />
+            <span className="text-sm font-bold">{label}</span>
+        </div>
+    );
   
     return (
       <div className="w-64 bg-white border-r border-gray-100 p-6 flex flex-col h-full sticky top-0 hidden md:flex">
@@ -28,10 +54,9 @@ const ParentSidebar = () => {
             <Link
               key={item.name}
               to={item.link}
+              // Academy sayfasını aktif işaretledik
               className={`flex items-center gap-3 p-3 rounded-xl transition-colors ${
-                item.link === '/parent/academy' // Şu an Academy'yi aktif kabul ediyoruz
-                  ? 'bg-blue-600 text-white shadow-md'
-                  : 'text-slate-600 hover:bg-gray-100'
+                item.link === '/parent/academy' ? 'bg-blue-600 text-white shadow-md' : 'text-slate-600 hover:bg-gray-100'
               }`}
             >
               <item.icon size={20} />
@@ -51,8 +76,8 @@ const ParentSidebar = () => {
     );
   };
 
-// Makale Kartı Bileşeni
-const ArticleCard = ({ title, category, readingTime, image, link }) => (
+// Makale Kartı Bileşeni (Tip Hatası Giderildi)
+const ArticleCard = ({ title, category, readingTime, image, link }: ArticleCardProps) => (
     <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-100 transform transition duration-300 hover:shadow-xl hover:-translate-y-0.5">
         <img src={image} alt={title} className="w-full h-48 object-cover" />
         <div className="p-6">
@@ -62,7 +87,7 @@ const ArticleCard = ({ title, category, readingTime, image, link }) => (
             </div>
             <h3 className="text-xl font-bold text-slate-900 mb-3 line-clamp-2">{title}</h3>
             <Link to={link} className="inline-flex items-center text-blue-600 font-semibold hover:text-blue-700 transition">
-                Makaleyi Oku <ArrowLeft className="rotate-180 ml-1" size={16} />
+                Makaleyi Oku <ArrowLeft className="rotate-180 ml-1" size={16} /> {/* ArrowLeft artık import edildi */}
             </Link>
         </div>
     </div>
@@ -70,7 +95,7 @@ const ArticleCard = ({ title, category, readingTime, image, link }) => (
 
 // Ana Akademi Bileşeni
 export default function ParentAcademy() {
-    const articles = [
+    const articles: ArticleData[] = [
         { 
             title: "Ergenlik Döneminde Pozitif İletişim Kurmanın 5 Anahtarı", 
             category: "Ergenlik", 
@@ -89,14 +114,14 @@ export default function ParentAcademy() {
             title: "Dijital Çağda Teknoloji Bağımlılığı ve Sınırlar", 
             category: "Dijital Refah", 
             readingTime: "8 dakika", 
-            image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd87?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1NzM4ODdfMHwxfHNlYXJjaHwyMHx8ZGlnaXRhbCUyMG5hdGl2ZXN8ZW58MHx8fHwxNzE4MTg3MjExfDA&ixlib=rb-4.0.3&q=80&w=600",
+            image: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd87?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1NzM4ODdfMHwxfHNlYXJjaHwyMHx8ZGlnaXRhbCUyMG5hdGl2ZXN8ZW58MHx8fHwxNzE4MTg3MjExfDA&xlib=rb-4.0.3&q=80&w=600",
             link: "#" 
         },
         { 
             title: "Uyku Düzeni: Ergenlikte Başarısızlığın Gizli Düşmanı", 
             category: "Fiziksel Sağlık", 
             readingTime: "6 dakika", 
-            image: "https://images.unsplash.com/photo-1512496014459-3d02b9e69f88?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1NzM4ODdfMHwxfHNlYXJjaHwyMHx8c2xlZXAlMjB0ZWVuYWdlcnxlbnwwfHx8fDE3MTgxODcyMTF8&ixlib=rb-4.0.3&q=80&w=600",
+            image: "https://images.unsplash.com/photo-1512496014459-3d02b9e69f88?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w1NzM4ODdfMHwxfHNlYXJjaHwyMHx8c2xlZXAlMjB0ZWVuYWdlcnxlbnwwfHx8fDE3MTgxODcyMTF8&lib=rb-4.0.3&q=80&w=600",
             link: "#" 
         },
     ];
