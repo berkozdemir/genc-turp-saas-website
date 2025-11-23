@@ -1,12 +1,13 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { supabase } from '../../services/supabase';
 
 export default function LeadForm() {
   const [email, setEmail] = useState('');
   const [role, setRole] = useState('student');
-  const [status, setStatus] = useState('idle'); // idle, loading, success, error
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
 
-  const handleSubmit = async (e) => {
+  // DÜZELTME BURADA: e parametresine tip ekledik
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setStatus('loading');
 
@@ -36,7 +37,7 @@ export default function LeadForm() {
          </div>
       )}
 
-      <h3 className="text-xl font-bold text-gray-800 mb-2">Genç Turp'tan Haberdar Ol 🚀</h3>
+      <h3 className="text-xl font-bold text-gray-800 mb-2">Turp Modun'dan Haberdar Ol 🚀</h3>
       <p className="text-sm text-gray-500 mb-4">Erken erişim ve Spotify avantajı için listeye gir.</p>
       
       <form onSubmit={handleSubmit} className="space-y-3">

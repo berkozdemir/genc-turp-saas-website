@@ -48,7 +48,7 @@ export default function SchoolRegisterPage() {
           </div>
           <h2 className="text-2xl font-bold text-slate-900 mb-2">Başvurunuz Alındı!</h2>
           <p className="text-slate-600 mb-6 leading-relaxed">
-            Genç Turp ekibi başvurunuzu inceleyip 24 saat içinde <strong>{formData.email}</strong> adresine dönüş yapacaktır.
+            Turp Modum ekibi başvurunuzu inceleyip 24 saat içinde <strong>{formData.email}</strong> adresine dönüş yapacaktır.
           </p>
           <div className="bg-slate-50 p-4 rounded-xl mb-6 text-sm text-slate-500">
             Referans Kodunuz: <span className="font-mono font-bold text-slate-900">TRP-{Math.floor(Math.random() * 10000)}</span>

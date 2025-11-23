@@ -20,5 +20,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "include": ["src", "src/services/supabase.js"]
+  "include": ["src", "src/services/supabase.ts"]
 }

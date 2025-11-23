@@ -1,14 +1,22 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { ArrowLeft, User, School, Lock, ArrowRight, CheckCircle2, Mail } from 'lucide-react';
+import { ArrowLeft, User, School, Lock, ArrowRight, CheckCircle2, Mail, Users, Heart } from 'lucide-react'; // Users ve Heart eklendi
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState<'student' | 'school'>('student');
+  // Rol tiplerine 'parent' eklendi
+  const [activeTab, setActiveTab] = useState<'student' | 'school' | 'parent'>('student');
   const [isLoading, setIsLoading] = useState(false);
   
-  // Form state'leri (Demo için görsel amaçlı tutuyoruz)
-  const [email, setEmail] = useState(activeTab === 'student' ? 'efe@okul.com' : 'mudur@okul.com');
+  // E-posta adresini aktif role göre ayarlama fonksiyonu
+  const getInitialEmail = (tab) => {
+    if (tab === 'student') return 'efe@okul.com';
+    if (tab === 'school') return 'mudur@okul.com';
+    if (tab === 'parent') return 'veli@okul.com';
+    return '';
+  };
+  
+  const [email, setEmail] = useState(getInitialEmail(activeTab));
   const [password, setPassword] = useState('123456');
 
   // Demo Giriş Fonksiyonu
@@ -16,14 +24,29 @@ export default function LoginPage() {
     e.preventDefault();
     setIsLoading(true);
 
-    // 1.5 saniye bekleyip giriş yapmış gibi davranıyoruz (Animasyon hissiyatı için)
     setTimeout(() => {
       if (activeTab === 'student') {
         navigate('/student/dashboard');
-      } else {
+      } else if (activeTab === 'school') {
         navigate('/school/dashboard');
+      } else if (activeTab === 'parent') { // Veli yönlendirmesi
+        navigate('/parent/dashboard');
       }
     }, 1500);
+  };
+
+  // Aktif role göre buton renklerini belirleme
+  const getButtonClass = () => {
+    if (activeTab === 'student') {
+      return 'bg-slate-900 hover:bg-black shadow-slate-900/20';
+    }
+    if (activeTab === 'school') {
+      return 'bg-red-600 hover:bg-red-700 shadow-red-900/20'; // Okul için kırmızı (Risk vurgusu)
+    }
+    if (activeTab === 'parent') {
+      return 'bg-blue-600 hover:bg-blue-700 shadow-blue-900/20'; // Veli için mavi (Güven vurgusu)
+    }
+    return 'bg-gray-500';
   };
 
   return (
@@ -83,16 +106,22 @@ export default function LoginPage() {
           {/* TAB SWITCHER (Rol Seçimi) */}
           <div className="bg-gray-100 p-1.5 rounded-2xl flex mb-8">
             <button 
-              onClick={() => { setActiveTab('student'); setEmail('efe@okul.com'); }}
+              onClick={() => { setActiveTab('student'); setEmail(getInitialEmail('student')); }}
               className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all duration-300 ${activeTab === 'student' ? 'bg-white shadow-md text-slate-900 scale-[1.02]' : 'text-gray-500 hover:text-gray-700'}`}
             >
               <User size={18} /> Öğrenci
             </button>
             <button 
-              onClick={() => { setActiveTab('school'); setEmail('mudur@okul.com'); }}
+              onClick={() => { setActiveTab('school'); setEmail(getInitialEmail('school')); }}
               className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all duration-300 ${activeTab === 'school' ? 'bg-white shadow-md text-slate-900 scale-[1.02]' : 'text-gray-500 hover:text-gray-700'}`}
             >
               <School size={18} /> Okul / PDR
+            </button>
+            <button 
+              onClick={() => { setActiveTab('parent'); setEmail(getInitialEmail('parent')); }}
+              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all duration-300 ${activeTab === 'parent' ? 'bg-white shadow-md text-slate-900 scale-[1.02]' : 'text-gray-500 hover:text-gray-700'}`}
+            >
+              <Heart size={18} /> Veli
             </button>
           </div>
 
@@ -129,10 +158,7 @@ export default function LoginPage() {
             <button 
               type="submit" 
               disabled={isLoading}
-              className={`w-full py-4 rounded-xl font-bold text-white flex items-center justify-center gap-2 transition-all transform active:scale-[0.98] shadow-xl hover:shadow-2xl
-                ${activeTab === 'student' 
-                  ? 'bg-slate-900 hover:bg-black shadow-slate-900/20' 
-                  : 'bg-blue-600 hover:bg-blue-700 shadow-blue-900/20'}`}
+              className={`w-full py-4 rounded-xl font-bold text-white flex items-center justify-center gap-2 transition-all transform active:scale-[0.98] shadow-xl hover:shadow-2xl ${getButtonClass()}`}
             >
               {isLoading ? (
                 <span className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
@@ -159,7 +185,7 @@ export default function LoginPage() {
               <div>
                 <p className="text-xs font-bold text-yellow-800 mb-1">Demo Modu Aktif</p>
                 <p className="text-xs text-yellow-700 leading-relaxed">
-                  Sunum sırasında veritabanı bağlantısı gerekmez. "Giriş Yap" butonuna basarak doğrudan panelleri inceleyebilirsiniz.
+                  "Giriş Yap" butonuna basarak seçili role ait paneli inceleyebilirsiniz.
                 </p>
               </div>
             </div>

@@ -2,49 +2,82 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Home, Music, ShoppingBag, LogOut, 
-  Play, Settings, Bell 
+  Play, // <--- EKSİK OLAN BU İKODU EKLEDİK
+  Settings, Bell, ClipboardList, 
+  Calendar, Wind, User, Users 
 } from 'lucide-react';
+
+// Bileşenler
 import MoodJournal from './MoodJournal';
-import SurveyCard from './SurveyCard';
-import SpotifyPlayer from '../../components/SpotifyPlayer'; // <--- YENİ: Player'ı içe aktardık
+import SpotifyPlayer from '../../components/SpotifyPlayer';
+import SurveyModal from '../../components/SurveyModal';
+
+// Veriler
+import { ALL_SURVEYS, Survey } from '../../data/surveys';
 
 export default function StudentDashboard() {
-  const [showSpotify, setShowSpotify] = useState(false); // <--- YENİ: Popup durumu
+  const [showSpotify, setShowSpotify] = useState(false);
+  const [selectedSurvey, setSelectedSurvey] = useState<Survey | null>(null);
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] font-sans flex flex-col md:flex-row relative">
       
       {/* --- SIDEBAR (SOL MENÜ) --- */}
       <aside className="w-full md:w-72 bg-white border-r border-gray-100 flex flex-col justify-between fixed bottom-0 md:relative z-30 md:h-screen order-2 md:order-1 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
-        <div className="p-8 hidden md:block">
+       <div className="p-8 hidden md:block">
           <div className="flex items-center gap-3 font-bold text-2xl tracking-tight mb-12 text-slate-900">
-            <div className="w-10 h-10 bg-slate-900 text-white rounded-xl flex items-center justify-center shadow-lg shadow-slate-200">G</div>
-            GençTurp.
+            <div className="w-10 h-10 bg-red-600 text-white rounded-xl flex items-center justify-center shadow-lg shadow-red-200">T</div> {/* 'G' yerine 'T' oldu */}
+            Turp Modum. {/* GençTurp. yerine Turp Modum. */}
           </div>
           
           <nav className="space-y-2">
-            <NavItem icon={<Home size={20} />} label="Ana Sayfa" active />
+            <Link to="/student/dashboard">
+              <NavItem icon={<Home size={20} />} label="Ana Sayfa" active />
+            </Link>
+            
             <Link to="/student/marketplace">
               <NavItem icon={<ShoppingBag size={20} />} label="Turp Bazaar" />
             </Link>
-            {/* Spotify menüsüne de tıklama özelliği ekleyebiliriz */}
+
+            <Link to="/student/peers">
+              <NavItem icon={<Users size={20} />} label="Kanka Alanı" />
+            </Link>
+
+            <Link to="/student/journal">
+              <NavItem icon={<Calendar size={20} />} label="Günlüğüm" />
+            </Link>
+
+            <Link to="/student/chill-zone">
+              <NavItem icon={<Wind size={20} />} label="Chill Zone" />
+            </Link>
+            
+            {/* Spotify Menü Linki */}
             <div onClick={() => setShowSpotify(true)}>
               <NavItem icon={<Music size={20} />} label="Spotify Modu" />
             </div>
-            <NavItem icon={<Settings size={20} />} label="Ayarlar" />
+            
+            <Link to="/student/profile">
+              <NavItem icon={<User size={20} />} label="Profilim" />
+            </Link>
+
+             <Link to="/student/settings">
+              <NavItem icon={<Settings size={20} />} label="Ayarlar" />
+            </Link>
           </nav>
         </div>
 
         {/* Mobile Bottom Nav */}
         <div className="md:hidden flex justify-around items-center p-4 bg-white border-t border-gray-200 pb-safe safe-area-pb">
-          <Home size={24} className="text-green-600" />
+          <Link to="/student/dashboard"><Home size={24} className="text-green-600" /></Link>
           <Link to="/student/marketplace"><ShoppingBag size={24} className="text-gray-400" /></Link>
           <button onClick={() => setShowSpotify(true)}>
             <Music size={24} className="text-gray-400" />
           </button>
-          <div className="w-8 h-8 bg-gray-200 rounded-full overflow-hidden">
-             <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Profile" />
-          </div>
+          <Link to="/student/profile">
+            <div className="w-8 h-8 bg-gray-200 rounded-full overflow-hidden">
+               <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Profile" />
+            </div>
+          </Link>
         </div>
 
         <div className="p-8 hidden md:block">
@@ -97,9 +130,9 @@ export default function StudentDashboard() {
               </div>
             </Link>
 
-            <div className="w-12 h-12 bg-gray-200 rounded-full overflow-hidden border-2 border-white shadow-md cursor-pointer hover:scale-105 transition hidden md:block">
+            <Link to="/student/profile" className="w-12 h-12 bg-gray-200 rounded-full overflow-hidden border-2 border-white shadow-md cursor-pointer hover:scale-105 transition hidden md:block">
               <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Avatar" />
-            </div>
+            </Link>
           </div>
         </header>
 
@@ -114,12 +147,42 @@ export default function StudentDashboard() {
           {/* SAĞ KOLON (Dar): Widget'lar */}
           <div className="space-y-6">
             
-            {/* WIDGET 1: Anket Kartı */}
-            <SurveyCard />
+            {/* WIDGET 1: GÖREV MERKEZİ (Tüm Anketler) */}
+            <div className="bg-white rounded-[2rem] p-6 border border-gray-100 shadow-sm">
+              <div className="flex items-center gap-2 mb-4">
+                <ClipboardList className="text-slate-900" size={20} />
+                <h3 className="font-bold text-slate-900">Haftalık Görevler</h3>
+              </div>
 
-            {/* WIDGET 2: Spotify Teaser (TIKLANABİLİR) */}
+              <div className="space-y-3">
+                {ALL_SURVEYS.map((survey) => (
+                  <div 
+                    key={survey.id}
+                    onClick={() => setSelectedSurvey(survey)}
+                    className="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-100 hover:border-gray-300 cursor-pointer transition group"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-full ${survey.color} flex items-center justify-center text-white shadow-sm group-hover:scale-110 transition`}>
+                        <span className="font-bold">{survey.title.charAt(0)}</span>
+                      </div>
+                      <div>
+                        <h4 className="text-sm font-bold text-slate-800 leading-tight">{survey.title}</h4>
+                        <p className="text-[10px] text-gray-500 line-clamp-1">{survey.description}</p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <span className="inline-block bg-yellow-100 text-yellow-700 text-[10px] font-bold px-2 py-1 rounded-full">
+                        +{survey.reward} TP
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* WIDGET 2: Spotify Teaser */}
             <div 
-              onClick={() => setShowSpotify(true)} // <--- YENİ: Tıklayınca açılır
+              onClick={() => setShowSpotify(true)}
               className="bg-black rounded-[2rem] p-6 text-white relative overflow-hidden shadow-xl shadow-gray-300 group cursor-pointer hover:-translate-y-1 transition duration-300"
             >
               <div className="relative z-10 flex items-center justify-between">
@@ -135,7 +198,6 @@ export default function StudentDashboard() {
                   <Play size={20} fill="currentColor" className="ml-1" />
                 </div>
               </div>
-              {/* Background Decor */}
               <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-green-500 opacity-20 blur-2xl rounded-full"></div>
             </div>
 
@@ -166,17 +228,23 @@ export default function StudentDashboard() {
         </div>
       </main>
 
-      {/* --- SPOTIFY PLAYER POPUP --- */}
+      {/* --- MODALLAR --- */}
       {showSpotify && (
         <SpotifyPlayer onClose={() => setShowSpotify(false)} />
       )}
       
+      {selectedSurvey && (
+        <SurveyModal 
+          survey={selectedSurvey} 
+          onClose={() => setSelectedSurvey(null)} 
+        />
+      )}
+
     </div>
   );
 }
 
 // --- YARDIMCI BİLEŞENLER ---
-
 interface NavItemProps {
   icon: React.ReactNode;
   label: string;

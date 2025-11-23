@@ -1,23 +1,26 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 // Ortam değişkenlerini al
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-let supabaseInstance = null;
+let supabaseInstance: SupabaseClient | null = null;
 
 // Sadece url ve key DOLU ise createClient'ı çalıştır
 if (supabaseUrl && supabaseAnonKey) {
+  console.log("✅ Supabase Anahtarları Bulundu. Gerçek Bağlantı Kuruluyor..."); // <--- BU SATIRI EKLE
   try {
     supabaseInstance = createClient(supabaseUrl, supabaseAnonKey);
   } catch (error) {
     console.warn("Supabase bağlantı hatası, Mock moduna geçiliyor.");
   }
+} else {
+  console.warn("⚠️ Supabase Anahtarları YOK! Mock (Demo) Modu Aktif."); // <--- BU SATIRI EKLE
 }
 
 // --- MOCK (SAHTE) İSTEMCİ ---
-// Anahtarlar yoksa veya hata oluşursa bu devreye girer ve uygulamanın çökmesini önler.
-const mockSupabase = {
+// TypeScript'in kızmaması için 'any' kullanıyoruz, çünkü mock nesnesi tam Supabase tipinde değil.
+const mockSupabase: any = {
   from: () => ({
     select: () => Promise.resolve({ data: [], error: null }),
     insert: () => Promise.resolve({ data: [], error: null }),
