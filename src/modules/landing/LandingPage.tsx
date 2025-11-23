@@ -1,10 +1,11 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'; // React importunu buradan da silin
 import { ArrowRight, Play, Activity, Shield, Zap, Music } from 'lucide-react';
-import { useTranslation } from 'react-i18next'; // 1. İçe aktar
+import { useTranslation } from 'react-i18next';
+import LanguageSwitcher from '../../components/LanguageSwitcher';
+
 
 export default function LandingPage() {
-  const { t } = useTranslation(); // 2. Hook'u başlat
+  const { t } = useTranslation();
 
   return (
     <div className="min-h-screen bg-white selection:bg-green-200 selection:text-green-900 font-sans">
@@ -16,16 +17,25 @@ export default function LandingPage() {
             <div className="w-8 h-8 bg-black text-white rounded-lg flex items-center justify-center">G</div>
             GençTurp.
           </div>
-          <div className="flex items-center gap-6">
+          
+          <div className="flex items-center gap-4"> {/* Gap'i biraz kıstım */}
+            
+            {/* --- 2. Dil Butonu Buraya --- */}
+            <LanguageSwitcher />
+            
+            <div className="w-px h-6 bg-gray-200 mx-2 hidden sm:block"></div> {/* Ayırıcı Çizgi */}
+
             <Link to="/login" className="text-sm font-semibold hover:text-green-600 transition">
               {t('login')}
             </Link>
-            <Link to="/school-register" className="bg-black text-white px-5 py-2.5 rounded-full text-sm font-bold hover:scale-105 transition shadow-lg shadow-green-500/20">
+            <Link to="/school-register" className="hidden sm:block bg-black text-white px-5 py-2.5 rounded-full text-sm font-bold hover:scale-105 transition shadow-lg shadow-green-500/20">
               {t('register_school')}
             </Link>
           </div>
         </div>
       </nav>
+
+      {/* ... Geri kalan kodlar aynı ... */}
 
       {/* --- HERO SECTION --- */}
       <section className="relative pt-32 pb-20 overflow-hidden">

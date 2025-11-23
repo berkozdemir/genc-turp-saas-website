@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react'; // Sadece kullandıklarını al
 import { supabase } from '../../services/supabase';
+
 
 export default function LeadForm() {
   const [email, setEmail] = useState('');

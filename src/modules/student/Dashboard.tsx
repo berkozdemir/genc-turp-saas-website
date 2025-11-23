@@ -1,15 +1,18 @@
-import React from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   Home, Music, ShoppingBag, LogOut, 
   Play, Settings, Bell 
 } from 'lucide-react';
-import MoodJournal from './MoodJournal'; // Yan odadaki dosyayı çağırıyoruz
-import SurveyCard from './SurveyCard';   // Yan odadaki dosyayı çağırıyoruz
+import MoodJournal from './MoodJournal';
+import SurveyCard from './SurveyCard';
+import SpotifyPlayer from '../../components/SpotifyPlayer'; // <--- YENİ: Player'ı içe aktardık
 
 export default function StudentDashboard() {
+  const [showSpotify, setShowSpotify] = useState(false); // <--- YENİ: Popup durumu
+
   return (
-    <div className="min-h-screen bg-[#F8FAFC] font-sans flex flex-col md:flex-row">
+    <div className="min-h-screen bg-[#F8FAFC] font-sans flex flex-col md:flex-row relative">
       
       {/* --- SIDEBAR (SOL MENÜ) --- */}
       <aside className="w-full md:w-72 bg-white border-r border-gray-100 flex flex-col justify-between fixed bottom-0 md:relative z-30 md:h-screen order-2 md:order-1 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
@@ -24,16 +27,21 @@ export default function StudentDashboard() {
             <Link to="/student/marketplace">
               <NavItem icon={<ShoppingBag size={20} />} label="Turp Bazaar" />
             </Link>
-            <NavItem icon={<Music size={20} />} label="Spotify Modu" />
+            {/* Spotify menüsüne de tıklama özelliği ekleyebiliriz */}
+            <div onClick={() => setShowSpotify(true)}>
+              <NavItem icon={<Music size={20} />} label="Spotify Modu" />
+            </div>
             <NavItem icon={<Settings size={20} />} label="Ayarlar" />
           </nav>
         </div>
 
-        {/* Mobile Bottom Nav (Sadece mobilde görünür) */}
+        {/* Mobile Bottom Nav */}
         <div className="md:hidden flex justify-around items-center p-4 bg-white border-t border-gray-200 pb-safe safe-area-pb">
           <Home size={24} className="text-green-600" />
           <Link to="/student/marketplace"><ShoppingBag size={24} className="text-gray-400" /></Link>
-          <Music size={24} className="text-gray-400" />
+          <button onClick={() => setShowSpotify(true)}>
+            <Music size={24} className="text-gray-400" />
+          </button>
           <div className="w-8 h-8 bg-gray-200 rounded-full overflow-hidden">
              <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Profile" />
           </div>
@@ -41,7 +49,10 @@ export default function StudentDashboard() {
 
         <div className="p-8 hidden md:block">
           {/* Premium Banner */}
-          <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-5 text-white mb-6 relative overflow-hidden group cursor-pointer">
+          <div 
+            onClick={() => setShowSpotify(true)}
+            className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-5 text-white mb-6 relative overflow-hidden group cursor-pointer"
+          >
             <div className="relative z-10">
               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Okul Hediyesi</p>
               <div className="flex justify-between items-end">
@@ -96,7 +107,6 @@ export default function StudentDashboard() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 auto-rows-min">
           
           {/* SOL KOLON (Geniş): MoodJournal */}
-          {/* lg:col-span-2 diyerek 3 kolonluk yerin 2'sini kaplıyor */}
           <div className="lg:col-span-2 h-full">
             <MoodJournal />
           </div>
@@ -104,11 +114,14 @@ export default function StudentDashboard() {
           {/* SAĞ KOLON (Dar): Widget'lar */}
           <div className="space-y-6">
             
-            {/* WIDGET 1: Anket Kartı (Daha önce yazdığımız bileşen) */}
+            {/* WIDGET 1: Anket Kartı */}
             <SurveyCard />
 
-            {/* WIDGET 2: Spotify Teaser */}
-            <div className="bg-black rounded-[2rem] p-6 text-white relative overflow-hidden shadow-xl shadow-gray-300 group cursor-pointer hover:-translate-y-1 transition duration-300">
+            {/* WIDGET 2: Spotify Teaser (TIKLANABİLİR) */}
+            <div 
+              onClick={() => setShowSpotify(true)} // <--- YENİ: Tıklayınca açılır
+              className="bg-black rounded-[2rem] p-6 text-white relative overflow-hidden shadow-xl shadow-gray-300 group cursor-pointer hover:-translate-y-1 transition duration-300"
+            >
               <div className="relative z-10 flex items-center justify-between">
                 <div>
                   <div className="flex items-center gap-2 mb-3">
@@ -152,6 +165,12 @@ export default function StudentDashboard() {
           </div>
         </div>
       </main>
+
+      {/* --- SPOTIFY PLAYER POPUP --- */}
+      {showSpotify && (
+        <SpotifyPlayer onClose={() => setShowSpotify(false)} />
+      )}
+      
     </div>
   );
 }
