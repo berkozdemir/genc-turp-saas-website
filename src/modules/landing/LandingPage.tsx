@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Play, Check, Activity, Shield, Zap, Music } from 'lucide-react';
+import { ArrowRight, Play, Activity, Shield, Zap, Music } from 'lucide-react';
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-white selection:bg-green-200 selection:text-green-900">
+    <div className="min-h-screen bg-white selection:bg-green-200 selection:text-green-900 font-sans">
       
       {/* --- NAV --- */}
       <nav className="fixed w-full z-50 top-0 left-0 border-b border-gray-100 bg-white/80 backdrop-blur-md">
@@ -49,14 +49,14 @@ export default function LandingPage() {
               Hemen Başla <ArrowRight size={20} />
             </Link>
             <div className="w-full sm:w-auto px-8 py-4 bg-white border border-gray-200 rounded-2xl font-bold text-lg text-gray-700 hover:bg-gray-50 transition flex items-center justify-center gap-2 cursor-pointer">
-              <Play size={20} fill="currentColor" className="text-gray-400" />
+              <Play size={20} className="text-gray-400" />
               Demoyu İzle
             </div>
           </div>
         </div>
       </section>
 
-      {/* --- BENTO GRID FEATURES (Modern Kısmı Burası) --- */}
+      {/* --- BENTO GRID FEATURES --- */}
       <section className="py-24 max-w-7xl mx-auto px-6">
         <h2 className="text-3xl font-bold mb-12 tracking-tight">Neden Genç Turp?</h2>
         
@@ -85,6 +85,7 @@ export default function LandingPage() {
             </div>
             <h3 className="text-2xl font-bold mb-2 text-slate-800">Risk Radarı</h3>
             <p className="text-gray-500 text-sm">Okul genelindeki depresyon ve zorbalık eğilimlerini ısı haritasında görün.</p>
+            
             {/* Mock Graph */}
             <div className="mt-6 flex items-end gap-1 h-16 opacity-50">
               <div className="w-1/5 bg-blue-200 h-[40%] rounded-t-md"></div>
