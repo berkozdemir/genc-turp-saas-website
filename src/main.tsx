@@ -84,7 +84,7 @@ if (!supabaseUrl || !supabaseKey) {
   );
 } else {
   // HER ŞEY YOLUNDAYSA: UYGULAMAYI BAŞLAT
-  ReactDOM.createRoot(rootElement).render(
+  ReactDOM.createRoot(document.getElementById('root')!).render(
     <React.StrictMode>
       <HelmetProvider> {/* <--- SEO SAĞLAYICISI BURADA */}
         <ErrorBoundary>
