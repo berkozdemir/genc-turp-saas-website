@@ -1,169 +1,126 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { supabase } from '../../services/supabase';
-import { User, School, Lock, Mail, ArrowRight, Music } from 'lucide-react';
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { ArrowLeft, User, School, Lock, ArrowRight, CheckCircle2, Mail } from 'lucide-react';
 
 export default function LoginPage() {
   const navigate = useNavigate();
-  const [mode, setMode] = useState('student'); // 'student' | 'school'
-  const [isRegistering, setIsRegistering] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState<'student' | 'school'>('student');
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // Form state'leri (Demo için görsel amaçlı tutuyoruz)
+  const [email, setEmail] = useState(activeTab === 'student' ? 'efe@okul.com' : 'mudur@okul.com');
+  const [password, setPassword] = useState('123456');
 
-  // Form State
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [fullName, setFullName] = useState(''); // Sadece kayıt için
-  const [schoolCode, setSchoolCode] = useState(''); // Sadece öğrenci kaydı için
-
-  const handleAuth = async (e) => {
+  // Demo Giriş Fonksiyonu
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setIsLoading(true);
 
-    try {
-      if (isRegistering) {
-        // --- KAYIT OLMA (REGISTER) ---
-        const { data, error } = await supabase.auth.signUp({ email, password });
-        if (error) throw error;
-
-        if (data.user) {
-          // Profil oluştur
-          await supabase.from('profiles').insert([{
-            id: data.user.id,
-            full_name: fullName,
-            role: mode === 'student' ? 'student' : 'pdr',
-            // Öğrenciyse okul koduyla okulu bulup eşleştirmek gerekir (Backend işi)
-            // Şimdilik placeholder
-          }]);
-          alert("Kayıt başarılı! Lütfen e-postanı onayla.");
-        }
+    // 1.5 saniye bekleyip giriş yapmış gibi davranıyoruz (Animasyon hissiyatı için)
+    setTimeout(() => {
+      if (activeTab === 'student') {
+        navigate('/student/dashboard');
       } else {
-        // --- GİRİŞ YAPMA (LOGIN) ---
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        
-        // Başarılı giriş sonrası yönlendirme
-        navigate(mode === 'student' ? '/student/dashboard' : '/school/dashboard');
+        navigate('/school/dashboard');
       }
-    } catch (error) {
-      alert(error.message);
-    } finally {
-      setLoading(false);
-    }
+    }, 1500);
   };
 
   return (
-    <div className={`min-h-screen flex items-center justify-center transition-colors duration-500 ${mode === 'student' ? 'bg-green-50' : 'bg-slate-50'}`}>
+    <div className="min-h-screen bg-white flex font-sans">
       
-      {/* Ana Kart */}
-      <div className="bg-white w-full max-w-4xl rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row">
+      {/* --- SOL TARAF (GÖRSEL & VİZYON) --- */}
+      <div className="hidden lg:flex w-1/2 bg-black relative overflow-hidden items-center justify-center p-12">
+        {/* Arka Plan Dokusu */}
+        <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-20"></div>
         
-        {/* SOL TARAF: Görsel ve Mesaj */}
-        <div className={`md:w-1/2 p-10 text-white flex flex-col justify-between transition-colors duration-500 ${mode === 'student' ? 'bg-green-600' : 'bg-slate-800'}`}>
-          <div>
-            <h1 className="text-3xl font-bold mb-2">Genç Turp 🌱</h1>
-            <p className="opacity-90">
-              {mode === 'student' 
-                ? "Duygularını anlayan, seni yargılamayan dijital alan." 
-                : "Okulunuz için veriye dayalı psikolojik danışmanlık asistanı."}
-            </p>
+        {/* Aurora Efekti */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-gradient-to-tr from-green-500 to-blue-600 rounded-full blur-[120px] opacity-40 animate-pulse"></div>
+
+        <div className="relative z-10 text-white max-w-lg">
+          <div className="w-16 h-16 bg-white text-black rounded-2xl flex items-center justify-center font-bold text-3xl mb-8 shadow-2xl">G</div>
+          
+          <h1 className="text-5xl font-bold mb-6 leading-tight tracking-tight">
+            Geleceğin <br/> 
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-400 to-blue-400">
+              Mental Sağlık
+            </span> <br/> 
+            Ekosistemi.
+          </h1>
+          
+          <div className="space-y-5 text-gray-400 mb-12">
+            <FeatureItem text="Yapay Zeka Destekli Risk Analizi" />
+            <FeatureItem text="Spotify Entegrasyonu ile Müzik Terapisi" />
+            <FeatureItem text="Anonim Akran Desteği & PDR Bildirimleri" />
           </div>
 
-          {mode === 'student' && (
-            <div className="bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20 mt-8">
-              <div className="flex items-center gap-3 mb-2">
-                <Music className="w-6 h-6 text-green-300" />
-                <span className="font-bold text-sm">Spotify Premium Fırsatı</span>
-              </div>
-              <p className="text-xs opacity-80">Okul kodunla giriş yap, 3 ay ücretsiz müzik keyfini kaçırma.</p>
-            </div>
-          )}
-
-          {mode === 'school' && (
-             <div className="mt-8">
-               <p className="text-sm font-medium mb-2">Henüz üye değil misiniz?</p>
-               <button 
-                 onClick={() => navigate('/school-register')}
-                 className="bg-white text-slate-900 px-4 py-2 rounded-lg text-sm font-bold w-full hover:bg-slate-100 transition"
-               >
-                 Okul Başvurusu Yap &rarr;
-               </button>
-             </div>
-          )}
-        </div>
-
-        {/* SAĞ TARAF: Form */}
-        <div className="md:w-1/2 p-10 relative">
-          {/* Mod Değiştirici (Switch) */}
-          <div className="flex bg-gray-100 rounded-lg p-1 mb-8">
-            <button 
-              onClick={() => setMode('student')}
-              className={`flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-md transition ${mode === 'student' ? 'bg-white shadow text-green-700' : 'text-gray-500'}`}
-            >
-              <User size={16} /> Öğrenci
-            </button>
-            <button 
-              onClick={() => setMode('school')}
-              className={`flex-1 flex items-center justify-center gap-2 py-2 text-sm font-medium rounded-md transition ${mode === 'school' ? 'bg-white shadow text-slate-800' : 'text-gray-500'}`}
-            >
-              <School size={16} /> Okul / PDR
-            </button>
-          </div>
-
-          <h2 className="text-2xl font-bold text-gray-800 mb-6">
-            {isRegistering ? 'Hesap Oluştur' : 'Tekrar Hoş Geldin'}
-          </h2>
-
-          <form onSubmit={handleAuth} className="space-y-4">
-            {isRegistering && (
-              <>
+          {/* Kullanıcı Görüşü (Social Proof) */}
+          <div className="p-6 bg-white/10 backdrop-blur-md rounded-2xl border border-white/10 hover:bg-white/15 transition duration-300">
+             <p className="italic text-lg text-gray-300 leading-relaxed">"Okuldaki en güvendiğim alan burası oldu. Kimse yargılamıyor, sadece dinliyor."</p>
+             <div className="flex items-center gap-4 mt-6">
+                <div className="w-10 h-10 bg-gradient-to-br from-green-400 to-blue-500 rounded-full"></div>
                 <div>
-                  <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Ad Soyad</label>
-                  <input 
-                    type="text" 
-                    className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
-                    value={fullName}
-                    onChange={e => setFullName(e.target.value)}
-                    placeholder="Adın Soyadın"
-                  />
+                  <p className="text-sm font-bold text-white">Efe K.</p>
+                  <p className="text-xs text-gray-400">10. Sınıf Öğrencisi</p>
                 </div>
-                {mode === 'student' && (
-                  <div>
-                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Okul Aktivasyon Kodu</label>
-                    <input 
-                      type="text" 
-                      className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
-                      value={schoolCode}
-                      onChange={e => setSchoolCode(e.target.value)}
-                      placeholder="Örn: TR-34-LİSE"
-                    />
-                  </div>
-                )}
-              </>
-            )}
+             </div>
+          </div>
+        </div>
+      </div>
 
+      {/* --- SAĞ TARAF (GİRİŞ FORMU) --- */}
+      <div className="w-full lg:w-1/2 flex flex-col justify-center p-8 md:p-20 relative bg-white">
+        <Link to="/" className="absolute top-8 left-8 flex items-center gap-2 text-gray-500 hover:text-black transition font-bold text-sm group">
+           <ArrowLeft size={16} className="group-hover:-translate-x-1 transition" /> Ana Sayfaya Dön
+        </Link>
+
+        <div className="max-w-md w-full mx-auto">
+          <div className="mb-10">
+            <h2 className="text-3xl font-bold text-slate-900 mb-2">Tekrar Hoş Geldin 👋</h2>
+            <p className="text-gray-500">Hesabına giriş yap ve kaldığın yerden devam et.</p>
+          </div>
+
+          {/* TAB SWITCHER (Rol Seçimi) */}
+          <div className="bg-gray-100 p-1.5 rounded-2xl flex mb-8">
+            <button 
+              onClick={() => { setActiveTab('student'); setEmail('efe@okul.com'); }}
+              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all duration-300 ${activeTab === 'student' ? 'bg-white shadow-md text-slate-900 scale-[1.02]' : 'text-gray-500 hover:text-gray-700'}`}
+            >
+              <User size={18} /> Öğrenci
+            </button>
+            <button 
+              onClick={() => { setActiveTab('school'); setEmail('mudur@okul.com'); }}
+              className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all duration-300 ${activeTab === 'school' ? 'bg-white shadow-md text-slate-900 scale-[1.02]' : 'text-gray-500 hover:text-gray-700'}`}
+            >
+              <School size={18} /> Okul / PDR
+            </button>
+          </div>
+
+          {/* FORM */}
+          <form onSubmit={handleLogin} className="space-y-5">
             <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase mb-1">E-Posta</label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-3 text-gray-400" size={20} />
+              <label className="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1">E-Posta</label>
+              <div className="relative group">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-slate-900 transition" size={20} />
                 <input 
                   type="email" 
-                  className="w-full pl-10 p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
                   value={email}
-                  onChange={e => setEmail(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl py-4 pl-12 pr-4 outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition font-medium text-slate-900"
                   placeholder="ornek@okul.com"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Şifre</label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-3 text-gray-400" size={20} />
+              <label className="block text-xs font-bold text-gray-500 uppercase mb-2 ml-1">Şifre</label>
+              <div className="relative group">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-slate-900 transition" size={20} />
                 <input 
                   type="password" 
-                  className="w-full pl-10 p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-green-500 outline-none"
                   value={password}
-                  onChange={e => setPassword(e.target.value)}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl py-4 pl-12 pr-4 outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition font-medium text-slate-900"
                   placeholder="••••••••"
                 />
               </div>
@@ -171,23 +128,57 @@ export default function LoginPage() {
 
             <button 
               type="submit" 
-              disabled={loading}
-              className={`w-full py-3 rounded-lg text-white font-bold shadow-lg transition transform active:scale-95 flex justify-center items-center gap-2 ${mode === 'student' ? 'bg-green-600 hover:bg-green-700' : 'bg-slate-800 hover:bg-slate-900'}`}
+              disabled={isLoading}
+              className={`w-full py-4 rounded-xl font-bold text-white flex items-center justify-center gap-2 transition-all transform active:scale-[0.98] shadow-xl hover:shadow-2xl
+                ${activeTab === 'student' 
+                  ? 'bg-slate-900 hover:bg-black shadow-slate-900/20' 
+                  : 'bg-blue-600 hover:bg-blue-700 shadow-blue-900/20'}`}
             >
-              {loading ? 'İşleniyor...' : (isRegistering ? 'Kayıt Ol' : 'Giriş Yap')} <ArrowRight size={18} />
+              {isLoading ? (
+                <span className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
+              ) : (
+                <>Giriş Yap <ArrowRight size={20} /></>
+              )}
             </button>
           </form>
 
-          <div className="mt-6 text-center">
-            <button 
-              onClick={() => setIsRegistering(!isRegistering)}
-              className="text-sm text-gray-500 hover:underline"
-            >
-              {isRegistering ? 'Zaten hesabın var mı? Giriş Yap' : 'Hesabın yok mu? Kayıt Ol'}
-            </button>
+          {/* ALT LİNKLER */}
+          <div className="mt-8 text-center space-y-6">
+            <p className="text-sm text-gray-500">
+              Hesabın yok mu?{' '}
+              <Link to="/school-register" className="text-slate-900 font-bold hover:underline">
+                Kayıt Ol
+              </Link>
+            </p>
+            
+            {/* DEMO BİLGİLENDİRME */}
+            <div className="bg-yellow-50 border border-yellow-100 p-4 rounded-xl flex items-start gap-3 text-left">
+              <div className="bg-yellow-100 p-1.5 rounded-full text-yellow-700 mt-0.5">
+                <CheckCircle2 size={16} />
+              </div>
+              <div>
+                <p className="text-xs font-bold text-yellow-800 mb-1">Demo Modu Aktif</p>
+                <p className="text-xs text-yellow-700 leading-relaxed">
+                  Sunum sırasında veritabanı bağlantısı gerekmez. "Giriş Yap" butonuna basarak doğrudan panelleri inceleyebilirsiniz.
+                </p>
+              </div>
+            </div>
           </div>
+
         </div>
       </div>
+    </div>
+  );
+}
+
+// Özellik Listesi Bileşeni
+function FeatureItem({ text }: { text: string }) {
+  return (
+    <div className="flex items-center gap-3 group">
+      <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center group-hover:bg-green-500 transition duration-300">
+        <CheckCircle2 className="text-green-400 group-hover:text-white transition duration-300" size={14} />
+      </div>
+      <span className="font-medium group-hover:text-white transition duration-300">{text}</span>
     </div>
   );
 }
