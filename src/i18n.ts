@@ -1,71 +1,66 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 
-// Çeviri Kaynakları
 const resources = {
   en: {
     translation: {
-      welcome: "Welcome to Genç Turp",
       login: "Login",
-      student_mode: "Student Mode",
-      school_mode: "School Mode",
-      dashboard: "Dashboard",
-      mood_journal: "Mood Journal",
-      marketplace: "Turp Bazaar",
-      spotify_mode: "Spotify Mode",
-      save: "Save",
-      logout: "Logout"
+      register_school: "Register School",
+      v2_badge: "v2.0 Live: Spotify Integration",
+      hero_title_1: "Digital Frequency",
+      hero_title_2: "of Your Mood.",
+      hero_desc: "A hidden sanctuary for students, an AI-powered early warning system for schools. We turn bullying and anxiety into data.",
+      get_started: "Get Started",
+      watch_demo: "Watch Demo",
+      why_gencturp: "Why Genç Turp?",
+      feature_music_title: "Music Therapy",
+      feature_music_desc: "AI analyzes your mood and opens the frequency that will heal you via Spotify. Plus, Premium is a school gift.",
+      feature_risk_title: "Risk Radar",
+      feature_risk_desc: "See depression and bullying trends across the school on a heat map.",
+      feature_gamification_title: "Reward System",
+      feature_gamification_desc: "Earn Turp Points as you solve surveys, grab cinema tickets and coffee rewards.",
+      feature_privacy_title: "Secrets Stay Secret.",
+      feature_privacy_desc: "Data is end-to-end encrypted. Parents or teachers cannot read the student's private journal. Only risk signals are transmitted.",
+      footer_cta_title: "Ready to Transform Your School?",
+      apply_now: "Apply Now",
+      footer_subtext: "No credit card required. 14-day free demo."
     }
   },
   tr: {
     translation: {
-      welcome: "Genç Turp'a Hoş Geldiniz",
       login: "Giriş Yap",
-      student_mode: "Öğrenci Modu",
-      school_mode: "Okul Modu",
-      dashboard: "Kontrol Paneli",
-      mood_journal: "Duygu Günlüğü",
-      marketplace: "Turp Bazaar",
-      spotify_mode: "Spotify Modu",
-      save: "Kaydet",
-      logout: "Çıkış Yap"
+      register_school: "Okulunu Kaydet",
+      v2_badge: "v2.0 Yayında: Spotify Entegrasyonu",
+      hero_title_1: "Ruh Halinin",
+      hero_title_2: "Dijital Frekansı.",
+      hero_desc: "Öğrenciler için gizli bir sığınak, okullar için yapay zeka destekli erken uyarı sistemi. Zorbalığı ve kaygıyı veriye dönüştürüyoruz.",
+      get_started: "Hemen Başla",
+      watch_demo: "Demoyu İzle",
+      why_gencturp: "Neden Genç Turp?",
+      feature_music_title: "Müzik Terapisi.",
+      feature_music_desc: "Yapay zeka ruh halini analiz eder, Spotify üzerinden seni iyileştirecek frekansı açar. Üstelik Premium okul hediyesi.",
+      feature_risk_title: "Risk Radarı",
+      feature_risk_desc: "Okul genelindeki depresyon ve zorbalık eğilimlerini ısı haritasında görün.",
+      feature_gamification_title: "Ödül Sistemi",
+      feature_gamification_desc: "Anketleri çözdükçe Turp Puan kazan, sinema bileti ve kahve ödüllerini kap.",
+      feature_privacy_title: "Sırlar, Sır Kalır.",
+      feature_privacy_desc: "Veriler uçtan uca şifrelenir. Aileler veya öğretmenler, öğrencinin özel günlüğünü okuyamaz. Sadece risk sinyalleri iletilir.",
+      footer_cta_title: "Okulunuzu Dönüştürmeye Hazır mısınız?",
+      apply_now: "Hemen Başvurun",
+      footer_subtext: "Kredi kartı gerekmez. 14 gün ücretsiz demo."
     }
   }
 };
 
 i18n
-  .use(initReactI18next) // i18n'i React'e bağla
+  .use(initReactI18next)
   .init({
     resources,
-    lng: "tr", // Varsayılan dil Türkçe
-    fallbackLng: "en", // Türkçe bulunamazsa İngilizce kullan
-    
+    lng: "tr",
+    fallbackLng: "en",
     interpolation: {
-      escapeValue: false // React zaten XSS koruması sağlıyor
+      escapeValue: false
     }
   });
 
 export default i18n;
-```
-
-### 3. Adım: `src/main.tsx` Dosyanı Kontrol Et
-
-Eğer az önce `main.tsx` içinden `import "./i18n";` satırını sildiysen, şimdi **geri eklemelisin**.
-
-**`src/main.tsx`** dosyanın son hali şöyle olmalı:
-
-```tsx
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
-import './index.css'
-import "./i18n"; // <-- BU SATIR ARTIK HATA VERMEYECEK
-import { HelmetProvider } from 'react-helmet-async';
-
-ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
-    <HelmetProvider>
-      <App />
-    </HelmetProvider>
-  </React.StrictMode>,
-)

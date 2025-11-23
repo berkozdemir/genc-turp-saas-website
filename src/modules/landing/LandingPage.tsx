@@ -1,8 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Play, Activity, Shield, Zap, Music } from 'lucide-react';
+import { useTranslation } from 'react-i18next'; // 1. İçe aktar
 
 export default function LandingPage() {
+  const { t } = useTranslation(); // 2. Hook'u başlat
+
   return (
     <div className="min-h-screen bg-white selection:bg-green-200 selection:text-green-900 font-sans">
       
@@ -14,9 +17,11 @@ export default function LandingPage() {
             GençTurp.
           </div>
           <div className="flex items-center gap-6">
-            <Link to="/login" className="text-sm font-semibold hover:text-green-600 transition">Giriş</Link>
+            <Link to="/login" className="text-sm font-semibold hover:text-green-600 transition">
+              {t('login')}
+            </Link>
             <Link to="/school-register" className="bg-black text-white px-5 py-2.5 rounded-full text-sm font-bold hover:scale-105 transition shadow-lg shadow-green-500/20">
-              Okulunu Kaydet
+              {t('register_school')}
             </Link>
           </div>
         </div>
@@ -24,33 +29,33 @@ export default function LandingPage() {
 
       {/* --- HERO SECTION --- */}
       <section className="relative pt-32 pb-20 overflow-hidden">
-        {/* Arka Plan Işıkları (Aurora) */}
+        {/* Arka Plan Işıkları */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] bg-gradient-to-r from-green-200 via-purple-200 to-blue-200 rounded-full blur-[100px] opacity-50 -z-10"></div>
 
         <div className="max-w-5xl mx-auto px-6 text-center">
           <div className="inline-flex items-center gap-2 bg-gray-50 border border-gray-200 rounded-full px-3 py-1 text-xs font-bold text-gray-600 mb-8 hover:bg-gray-100 transition cursor-pointer">
             <span className="flex h-2 w-2 rounded-full bg-green-500"></span>
-            v2.0 Yayında: Spotify Entegrasyonu
+            {t('v2_badge')}
           </div>
           
           <h1 className="text-6xl md:text-8xl font-extrabold tracking-tighter text-slate-900 mb-6 leading-[0.9]">
-            Ruh Halinin <br />
+            {t('hero_title_1')} <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-600 to-blue-600">
-              Dijital Frekansı.
+              {t('hero_title_2')}
             </span>
           </h1>
           
           <p className="text-xl text-gray-500 max-w-2xl mx-auto mb-10 leading-relaxed">
-            Öğrenciler için gizli bir sığınak, okullar için yapay zeka destekli erken uyarı sistemi. Zorbalığı ve kaygıyı veriye dönüştürüyoruz.
+            {t('hero_desc')}
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link to="/login" className="w-full sm:w-auto px-8 py-4 bg-black text-white rounded-2xl font-bold text-lg hover:shadow-2xl hover:-translate-y-1 transition flex items-center justify-center gap-2">
-              Hemen Başla <ArrowRight size={20} />
+              {t('get_started')} <ArrowRight size={20} />
             </Link>
             <div className="w-full sm:w-auto px-8 py-4 bg-white border border-gray-200 rounded-2xl font-bold text-lg text-gray-700 hover:bg-gray-50 transition flex items-center justify-center gap-2 cursor-pointer">
               <Play size={20} className="text-gray-400" />
-              Demoyu İzle
+              {t('watch_demo')}
             </div>
           </div>
         </div>
@@ -58,19 +63,19 @@ export default function LandingPage() {
 
       {/* --- BENTO GRID FEATURES --- */}
       <section className="py-24 max-w-7xl mx-auto px-6">
-        <h2 className="text-3xl font-bold mb-12 tracking-tight">Neden Genç Turp?</h2>
+        <h2 className="text-3xl font-bold mb-12 tracking-tight">{t('why_gencturp')}</h2>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 auto-rows-[300px]">
           
-          {/* KART 1: Spotify (Büyük) */}
+          {/* KART 1: Spotify */}
           <div className="md:col-span-2 bg-black rounded-[2rem] p-10 text-white relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-green-500 blur-[150px] opacity-20 group-hover:opacity-40 transition duration-700"></div>
             <div className="relative z-10">
               <div className="w-12 h-12 bg-green-500 rounded-2xl flex items-center justify-center mb-6 text-black">
                 <Music size={24} strokeWidth={3} />
               </div>
-              <h3 className="text-3xl font-bold mb-2">Müzik Terapisi.</h3>
-              <p className="text-gray-400 max-w-md">Yapay zeka ruh halini analiz eder, Spotify üzerinden seni iyileştirecek frekansı açar. Üstelik Premium okul hediyesi.</p>
+              <h3 className="text-3xl font-bold mb-2">{t('feature_music_title')}</h3>
+              <p className="text-gray-400 max-w-md">{t('feature_music_desc')}</p>
             </div>
             <img 
               src="https://storage.googleapis.com/pr-newsroom-wp/1/2018/11/Spotify_Logo_RGB_Green.png" 
@@ -83,8 +88,8 @@ export default function LandingPage() {
             <div className="bg-white w-12 h-12 rounded-xl shadow-sm flex items-center justify-center mb-6 text-blue-600">
               <Activity size={24} />
             </div>
-            <h3 className="text-2xl font-bold mb-2 text-slate-800">Risk Radarı</h3>
-            <p className="text-gray-500 text-sm">Okul genelindeki depresyon ve zorbalık eğilimlerini ısı haritasında görün.</p>
+            <h3 className="text-2xl font-bold mb-2 text-slate-800">{t('feature_risk_title')}</h3>
+            <p className="text-gray-500 text-sm">{t('feature_risk_desc')}</p>
             
             {/* Mock Graph */}
             <div className="mt-6 flex items-end gap-1 h-16 opacity-50">
@@ -101,8 +106,8 @@ export default function LandingPage() {
             <div className="w-12 h-12 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center mb-6">
               <Zap size={24} />
             </div>
-            <h3 className="text-2xl font-bold mb-2 text-slate-800">Ödül Sistemi</h3>
-            <p className="text-gray-600 text-sm">Anketleri çözdükçe Turp Puan kazan, sinema bileti ve kahve ödüllerini kap.</p>
+            <h3 className="text-2xl font-bold mb-2 text-slate-800">{t('feature_gamification_title')}</h3>
+            <p className="text-gray-600 text-sm">{t('feature_gamification_desc')}</p>
           </div>
 
           {/* KART 4: Privacy */}
@@ -111,8 +116,8 @@ export default function LandingPage() {
                <div className="w-12 h-12 bg-white text-slate-900 rounded-xl flex items-center justify-center mb-6 shadow-sm">
                 <Shield size={24} />
               </div>
-              <h3 className="text-3xl font-bold mb-4 text-slate-900">Sırlar, Sır Kalır.</h3>
-              <p className="text-slate-600">Veriler uçtan uca şifrelenir. Aileler veya öğretmenler, öğrencinin özel günlüğünü okuyamaz. Sadece risk sinyalleri iletilir.</p>
+              <h3 className="text-3xl font-bold mb-4 text-slate-900">{t('feature_privacy_title')}</h3>
+              <p className="text-slate-600">{t('feature_privacy_desc')}</p>
             </div>
             <div className="bg-white p-6 rounded-2xl shadow-lg rotate-3 group-hover:rotate-0 transition duration-500">
               <div className="flex items-center gap-3 mb-4 border-b border-gray-100 pb-4">
@@ -133,11 +138,11 @@ export default function LandingPage() {
       {/* --- Footer CTA --- */}
       <section className="py-20 text-center">
         <div className="max-w-3xl mx-auto px-6">
-          <h2 className="text-4xl font-bold mb-6">Okulunuzu Dönüştürmeye Hazır mısınız?</h2>
+          <h2 className="text-4xl font-bold mb-6">{t('footer_cta_title')}</h2>
           <Link to="/school-register" className="inline-block bg-green-500 text-black px-10 py-5 rounded-full font-bold text-xl hover:bg-green-400 hover:scale-105 transition shadow-xl shadow-green-200">
-            Hemen Başvurun
+            {t('apply_now')}
           </Link>
-          <p className="mt-6 text-gray-400 text-sm">Kredi kartı gerekmez. 14 gün ücretsiz demo.</p>
+          <p className="mt-6 text-gray-400 text-sm">{t('footer_subtext')}</p>
         </div>
       </section>
 
